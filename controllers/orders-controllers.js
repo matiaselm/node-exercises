@@ -1,4 +1,5 @@
 const HttpError = require('../models/http-error');
+const Order = require('../models/order');
 
 const TESTORDERS = [
     {
@@ -16,6 +17,53 @@ const TESTORDERS = [
         "pcs": 1
     }
 ];
+
+const createOrder = async (req, res, next) => {
+    const { orderdate, client, productname, pcs } = req.body;
+    const createdOrder = new Order({
+        orderdate,
+        client,
+        productname,
+        pcs
+    });
+
+    try {
+        await createdOrder.save();
+    } catch (err) {
+        const error = HttpError(
+            'Creating order failed, please try again ',
+            500
+        );
+        return next(error)
+    }
+    res
+        .status(201)
+        .json(createdOrder)
+};
+
+const updateOrderById = (req, res, next) => {
+    const { pcs } = req.body;
+    const orderId = parseInt(req.params.id);
+
+    const updatedOrder = { ...TESTORDERS.find(p => p.id === orderId) };
+
+    const orderIndex = TESTORDERS.findIndex(p => p.id === orderId);
+    updatedOrder.pcs = pcs;
+
+    TESTORDERS[orderIndex] = updatedOrder;
+
+    res.status(200)
+        .json({ order: updatedOrder });
+};
+
+const deleteOrderById = (req, res, next) => {
+    const orderId = parseInt(req.params.id);
+    TESTORDERS = TESTORDERS.filter(p => p.id !== orderId);
+    console.log(TESTORDERS);
+    res
+        .status(200)
+        .json({ message: 'Deleted order' });
+};
 
 const getAllOrders = (req, res, next) => {
     console.log('GET request in orders');
