@@ -36,12 +36,6 @@ app.use((error, req, res, next) => {
     res.json({ message: error.message || 'Unknown error' })
 });
 
-/* 
-Middleware: 
-    - Server listens to requests made by client
-    - These middleware components handle those requests 
-*/
-
 mongoose
     .connect('mongodb+srv://dbuser:7uggMUxVa7s8Ki4@cluster0.mz3t1.gcp.mongodb.net/OrderDB?retryWrites=true&w=majority', { useNewUrlParser: true })
     .then(() => {
