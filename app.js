@@ -8,6 +8,9 @@ const HttpError = require('./models/http-error');
 
 const app = express();
 
+// For POST-methods to work
+app.use(bodyParser.json());
+
 // Allow CORS-requests
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -42,7 +45,7 @@ Middleware:
 mongoose
     .connect('mongodb+srv://dbuser:7uggMUxVa7s8Ki4@cluster0.mz3t1.gcp.mongodb.net/OrderDB?retryWrites=true&w=majority', { useNewUrlParser: true })
     .then(() => {
-        app.listen(5005);
+        app.listen(5000);
     })
     .catch((e) => {
         return console.log(e);

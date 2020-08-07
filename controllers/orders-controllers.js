@@ -19,6 +19,7 @@ const TESTORDERS = [
 ];
 
 const createOrder = async (req, res, next) => {
+    console.log("POST request body: " + req.body);
     const { orderdate, client, productname, pcs } = req.body;
     const createdOrder = new Order({
         orderdate,
@@ -78,10 +79,13 @@ const getOrderById = (req, res, next) => {
 
     // If the order requested doesn't exist
     if (!order) {
-        return next(new HttpError('Order could not be found', 404))
+        return next(new HttpError('Order with given id could not be found', 404))
     }
     res.json({ order });
 };
 
 exports.getAllOrders = getAllOrders;
 exports.getOrderById = getOrderById;
+exports.createOrder = createOrder;
+exports.updateOrderById = updateOrderById;
+exports.deleteOrderById = deleteOrderById;

@@ -10,4 +10,8 @@ router.get('/', ordersControllers.getAllOrders);
 
 router.get('/:id', ordersControllers.getOrderById);
 
+router.post('/', ordersControllers.createOrder);
+
+router.post(':id', ordersControllers.updateOrderById);
+
 module.exports = router;
