@@ -1,9 +1,12 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-
+/*
 const productsRoutes = require('./routes/products-routes');
 const ordersRoutes = require('./routes/orders-routes');
+*/
+const usersRoutes = require('./routes/users-routes');
+
 const HttpError = require('./models/http-error');
 
 const app = express();
@@ -19,9 +22,10 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
     next(); //Continue to the next middleware
 });
-
+/*
 app.use('/api/products', productsRoutes);
-app.use('/api/orders', ordersRoutes);
+app.use('/api/orders', ordersRoutes);*/
+app.use('/api/users', usersRoutes);
 
 app.use((req, res, next) => {
     const error = new HttpError('Could not find route', 404);
@@ -37,7 +41,7 @@ app.use((error, req, res, next) => {
 });
 
 mongoose
-    .connect('mongodb+srv://dbuser:7uggMUxVa7s8Ki4@cluster0.mz3t1.gcp.mongodb.net/OrderDB?retryWrites=true&w=majority', { useNewUrlParser: true })
+    .connect('mongodb+srv://dbuser:7uggMUxVa7s8Ki4@cluster0.mz3t1.gcp.mongodb.net/UserDB?retryWrites=true&w=majority', { useNewUrlParser: true })
     .then(() => {
         app.listen(5000);
     })
