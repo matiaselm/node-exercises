@@ -8,7 +8,8 @@ const userSchema = new Schema({
     address: { type: String, required: true },
     postalnum: { type: Number, required: true },
     city: { type: String, required: true },
-    phonenum: { type: Number, required: true }
+    phonenum: { type: Number, required: true },
+    bills: { type: Boolean, default: false, required: true }
 })
 
 module.exports = mongoose.model('User', userSchema)

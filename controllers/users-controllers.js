@@ -7,13 +7,14 @@ const TESTUSERS = require('../testdb/test-user-with-bills');
 
 const createUser = async (req, res, next) => {
     console.log("POST request body: " + req.body);
-    const { name, address, postalnum, city, phonenum } = req.body;
+    const { name, address, postalnum, city, phonenum, bills } = req.body;
     const createdUser = new User({
         name,
         address,
         postalnum,
         city,
-        phonenum
+        phonenum,
+        bills
     });
 
     try {
@@ -31,7 +32,7 @@ const createUser = async (req, res, next) => {
 };
 
 const updateUserById = async (req, res, next) => {
-    const { name, address, postalnum, city, phonenum } = req.body;
+    const { name, address, postalnum, city, phonenum, bills } = req.body;
     const userId = req.params._id;
     let user;
 
@@ -49,6 +50,7 @@ const updateUserById = async (req, res, next) => {
         user.postalnum = postalnum;
         user.city = city;
         user.phonenum = phonenum;
+        user.bills = bills;
         try {
             await user.save();
         } catch (e) {
