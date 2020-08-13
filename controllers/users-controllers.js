@@ -1,35 +1,9 @@
 const HttpError = require('../models/http-error');
 const User = require('../models/user');
 
-// const TESTUSERS = require('../testdb/test-users');
+const TESTUSERS = require('../testdb/test-user-with-bills');
 
 // console.log('TESTUSERS: ' + TESTUSERS)
-
-const TESTUSERS = [
-    {
-        "id": 1,
-        "name": "Matias Jalava",
-        "address": "Siltakuja",
-        "postalnum": 02770,
-        "city": "Espoo",
-        "phonenum": 050777777,
-    },
-    {
-        "id": 2,
-        "name": "Tuomas",
-        "address": "Tapialantie",
-        "postalnum": 14240,
-        "city": "Janakkala",
-        "phonenum": 050555555,
-    },
-    {
-        "id": 3,
-        "name": "Nelli",
-        "address": "Carlanderintie",
-        "postalnum": 04500,
-        "city": "Kellokoski",
-        "phonenum": 050666666,
-    }];
 
 const createUser = async (req, res, next) => {
     console.log("POST request body: " + req.body);
