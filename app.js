@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
 const usersRoutes = require('./routes/users-routes');
+const billsRoutes = require('./routes/bills-routes');
 
 const HttpError = require('./models/http-error');
 
@@ -21,6 +22,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/api/users', usersRoutes);
+app.use('/api/bills', billsRoutes);
 
 app.use((req, res, next) => {
     const error = new HttpError('Could not find route', 404);

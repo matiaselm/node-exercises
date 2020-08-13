@@ -1,10 +1,6 @@
 const HttpError = require('../models/http-error');
 const User = require('../models/user');
 
-const TESTUSERS = require('../testdb/test-user-with-bills');
-
-// console.log('TESTUSERS: ' + TESTUSERS)
-
 const createUser = async (req, res, next) => {
     console.log("POST request body: " + req.body);
     const { name, address, postalnum, city, phonenum, bills } = req.body;
@@ -21,7 +17,7 @@ const createUser = async (req, res, next) => {
         await createdUser.save();
     } catch (err) {
         const error = new HttpError(
-            'Creating user failed, please try again ',
+            'Creating user failed, ' + err,
             500
         );
         return next(error)
@@ -95,7 +91,7 @@ const deleteUserById = async (req, res, next) => {
         );
         return next(error);
     }
-    res.status(200).json({ message: 'Deleted order' });
+    res.status(200).json({ message: 'Deleted user' });
 };
 
 const getAllUsers = async (req, res, next) => {
@@ -111,7 +107,7 @@ const getAllUsers = async (req, res, next) => {
 
     if (!users || users.length === 0) {
         const error = new HttpError(
-            'Could not find anu users',
+            'Could not find any users',
             404
         );
         return next(error);
