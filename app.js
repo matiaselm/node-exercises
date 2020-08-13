@@ -1,10 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-/*
-const productsRoutes = require('./routes/products-routes');
-const ordersRoutes = require('./routes/orders-routes');
-*/
+
 const usersRoutes = require('./routes/users-routes');
 
 const HttpError = require('./models/http-error');
@@ -22,9 +19,7 @@ app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
     next(); //Continue to the next middleware
 });
-/*
-app.use('/api/products', productsRoutes);
-app.use('/api/orders', ordersRoutes);*/
+
 app.use('/api/users', usersRoutes);
 
 app.use((req, res, next) => {
