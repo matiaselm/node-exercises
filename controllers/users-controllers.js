@@ -30,44 +30,112 @@ const createUser = async (req, res, next) => {
         .json(createdUser)
 };
 
-const updateUserById = (req, res, next) => {
-    const { pcs } = req.body;
-    const userId = parseInt(req.params.id);
+const updateUserById = async (req, res, next) => {
+    const { name, address, postalnum, city, phonenum } = req.body;
+    const userId = req.params._id;
+    let user;
 
-    const updatedUser = { ...TESTUSERS.find(p => p.id === userId) };
+    try {
+        user = await User.findById(userId);
+    } catch (e) {
+        const error = new HttpError(
+            'Updating user failed', 500
+        );
+        return next(error);
+    }
+    if (user) {
+        user.name = name;
+        user.address = address;
+        user.postalnum = postalnum;
+        user.city = city;
+        user.phonenum = phonenum;
+        try {
+            await user.save();
+        } catch (e) {
+            const error = new HttpError(
+                'Updating user failed', 500
+            );
+            return next(error);
+        }
+    } else {
+        const error = new HttpError(
+            'Could not find that user', 404
+        );
+        return next(error);
+    }
 
-    const userIndex = TESTUSERS.findIndex(p => p.id === userId);
-    updatedUser.pcs = pcs;
-
-    TESTUSERS[userIndex] = updatedUser;
-
-    res.status(200)
-        .json({ user: updatedUser });
+    res.json({ user: user.toObject({ getters: true }) });
 };
 
-const deleteUserById = (req, res, next) => {
-    const userId = parseInt(req.params.id);
-    TESTUSERS = TESTUSERS.filter(p => p.id !== userId);
-    console.log(TESTUSERS);
-    res
-        .status(200)
-        .json({ message: 'Deleted user' });
+const deleteUserById = async (req, res, next) => {
+    const userId = req.params._id;
+    let user;
+    try {
+        user = await User.findById(userId);
+    } catch (e) {
+        const error = new HttpError(
+            'Deleting user failed', 500
+        );
+        return next(error);
+    }
+    if (user) {
+        try {
+            await user.remove();
+        } catch (e) {
+            const error = new HttpError(
+                'Deleting user failed', 500
+            );
+            return next(error);
+        }
+    } else {
+        const error = new HttpError(
+            'Could not find user', 404
+        );
+        return next(error);
+    }
+    res.status(200).json({ message: 'Deleted order' });
 };
 
-const getAllUsers = (req, res, next) => {
-    console.log('GET request in users' + TESTUSERS);
-    res.json(TESTUSERS);
+const getAllUsers = async (req, res, next) => {
+    let users;
+    try {
+        users = await User.find();
+    } catch (e) {
+        const error = new HttpError(
+            'Cannot fetch all users', 500
+        );
+        return next(error);
+    }
+
+    if (!users || users.length === 0) {
+        const error = new HttpError(
+            'Could not find anu users',
+            404
+        );
+        return next(error);
+    }
+    res.json(users);
 };
 
-const getUserById = (req, res, next) => {
-    const userid = parseInt(req.params.id);
-    const user = TESTUSERS.find(p => {
-        return p.id === userid;
-    });
+const getUserById = async (req, res, next) => {
+    const userid = req.params._id;
+    let user;
+
+    try {
+        user = await User.findById(userid);
+    } catch (e) {
+        const error = new HttpError(
+            'Cannot find an user',
+            500
+        );
+        return next(error);
+    }
 
     // If the user requested doesn't exist
     if (!user) {
-        return next(new HttpError('User with given id could not be found', 404))
+        return next(new HttpError(
+            'User with given id could not be found',
+            404));
     }
     res.json({ user });
 };

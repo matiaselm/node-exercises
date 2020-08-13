@@ -7,10 +7,12 @@ const router = express.Router();
 
 router.get('/', usersControllers.getAllUsers);
 
-router.get('/:id', usersControllers.getUserById);
+router.get('/:_id', usersControllers.getUserById);
 
 router.post('/', usersControllers.createUser);
 
-router.post(':id', usersControllers.updateUserById);
+router.patch(':_id', usersControllers.updateUserById);
+
+router.delete('/:_id', usersControllers.deleteUserById);
 
 module.exports = router;
