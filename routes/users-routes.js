@@ -9,9 +9,11 @@ router.get('/', usersControllers.getAllUsers);
 
 router.get('/:_id', usersControllers.getUserById);
 
+router.post('/login/', usersControllers.login);
+
 router.post('/', usersControllers.createUser);
 
-router.patch(':_id', usersControllers.updateUserById);
+router.patch('/:_id', usersControllers.updateUserById);
 
 router.delete('/:_id', usersControllers.deleteUserById);
 

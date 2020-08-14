@@ -1,11 +1,39 @@
 const HttpError = require('../models/http-error');
 const User = require('../models/user');
+const mongoose = require('mongoose');
+const { validationResult } = require('express-validator');
+const bcrypt = require('bcryptjs');
 
+// Created users are also added to the phonebook-part of the site, 
+// that's why so much information is required
+// Works! Need to encrypt passwords
 const createUser = async (req, res, next) => {
     console.log("POST request body: " + req.body);
-    const { name, address, postalnum, city, phonenum, bills } = req.body;
+    const { uid, name, email, password, address, postalnum, city, phonenum, bills } = req.body;
+
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return next(new HttpError(
+            'Invalid inputs passed', 422)
+        );
+    }
+
+    let existingUser;
+    let hashedPassword;
+
+    try {
+        hashedPassword = await bcrypt.hash(password, 12);
+    } catch (e) {
+        return next(new HttpError(
+            'Could not create user', 500
+        ));
+    }
+
     const createdUser = new User({
+        uid,
         name,
+        email,
+        password: hashedPassword,
         address,
         postalnum,
         city,
@@ -13,18 +41,67 @@ const createUser = async (req, res, next) => {
         bills
     });
 
-    try {
-        await createdUser.save();
+    try { // User.findOne needs to return false for both, email and uid. 
+        // Both of those need to be unique for the new user 
+        existingUser = await User.findOne({ $or: [{ email: email }, { uid: uid }] })
+
+        // If the user with the uid or email doesn't exist -> This is expected
+        if (!existingUser) {
+            await createdUser.save();
+        } else {
+            return next(
+                new HttpError('User already exists', 500)
+            );
+        }
     } catch (err) {
-        const error = new HttpError(
+        return next(new HttpError(
             'Creating user failed, ' + err,
-            500
-        );
-        return next(error)
+            500));
     }
+
     res
         .status(201)
         .json(createdUser)
+};
+
+const login = async (req, res, next) => {
+    console.log("User login");
+    const { uid, password } = req.body;
+    let existingUser;
+
+    // Can the given uid be found
+    try {
+        existingUser = await User.findOne({ uid: uid })
+    } catch (e) {
+        return next(new HttpError(
+            'UID mismatch', 422
+        ));
+    }
+
+    // If userId can be found
+    if (!existingUser) {
+        return next(new HttpError(
+            "User id and password don't match", 422
+        ));
+    }
+
+    // Check if given password corresponds to the one in the db
+    let isValidPassword = false;
+    try {
+        isValidPassword = await bcrypt.compare(password, existingUser.password)
+    } catch (e) {
+        return next(new HttpError(
+            'Invalid credentials', 401
+        ));
+    }
+    if (!isValidPassword) {
+        return next(new HttpError(
+            'Invalid credentials', 401
+        ));
+    }
+
+    // log in to the db
+    res.json({ message: 'Logged in' });
 };
 
 const updateUserById = async (req, res, next) => {
@@ -141,5 +218,6 @@ const getUserById = async (req, res, next) => {
 exports.getAllUsers = getAllUsers;
 exports.getUserById = getUserById;
 exports.createUser = createUser;
+exports.login = login;
 exports.updateUserById = updateUserById;
 exports.deleteUserById = deleteUserById;
