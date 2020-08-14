@@ -3,6 +3,7 @@ const User = require('../models/user');
 const mongoose = require('mongoose');
 const { validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 // Created users are also added to the phonebook-part of the site, 
 // that's why so much information is required
@@ -59,9 +60,22 @@ const createUser = async (req, res, next) => {
             500));
     }
 
+    let token;
+    try {
+        token = jwt.sign({ uid: createdUser.uid },
+            'good_key_lmao',
+            { expiresIn: '1h' }
+        );
+    } catch (e) {
+        return next(new HttpError(
+            'Creating user failed', 500
+        ));
+    };
+
+    // Return the token and all other wanted information to client
     res
         .status(201)
-        .json(createdUser)
+        .json({ token: token, uid: createdUser.uid, name: createdUser.name });
 };
 
 const login = async (req, res, next) => {
@@ -100,8 +114,21 @@ const login = async (req, res, next) => {
         ));
     }
 
-    // log in to the db
-    res.json({ message: 'Logged in' });
+    let token;
+    try {
+        token = jwt.sign({ uid: existingUser.uid },
+            'good_key_lmao',
+            { expiresIn: '1h' }
+        );
+    } catch (e) {
+        return next(new HttpError(
+            'loggin in failed', 500
+        ));
+    };
+
+    res
+        .status(201)
+        .json({ token: token, uid: existingUser.uid, name: existingUser.name });
 };
 
 const updateUserById = async (req, res, next) => {
