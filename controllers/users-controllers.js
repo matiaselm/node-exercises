@@ -5,9 +5,9 @@ const { validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-// Created users are also added to the phonebook-part of the site, 
+// Created users are also currently added to the phonebook-part of the site, 
 // that's why so much information is required
-// Works! Need to encrypt passwords
+// Works with password encrypting
 const createUser = async (req, res, next) => {
     console.log("POST request body: " + req.body);
     const { uid, name, email, password, address, postalnum, city, phonenum, bills } = req.body;
