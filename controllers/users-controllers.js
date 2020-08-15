@@ -281,8 +281,85 @@ const getUserById = async (req, res, next) => {
     res.json({ user });
 };
 
+// So we can get users by fetching their uid
+// Working
+const getUserByUid = async (req, res, next) => {
+    const useruid = req.params.uid;
+
+    let user;
+
+    try {
+        user = await User.findOne({ uid: useruid });
+    } catch (e) {
+        const error = new HttpError(
+            'Cannot find an user by uid',
+            500
+        );
+        return next(error);
+    }
+
+    // If the user requested doesn't exist
+    if (!user) {
+        return next(new HttpError(
+            'User with given uid could not be found',
+            404));
+    }
+    res.json(user);
+};
+
+// Working, searchterm needs to be specific
+const getUsersByPhone = async (req, res, next) => {
+    const phonenum = req.params.phonenum;
+    let users;
+
+    try {
+        users = await User.find({ phonenum: phonenum })
+    } catch (e) {
+        return next(new HttpError(
+            'Cannot find users by phonenum',
+            500
+        ));
+    }
+
+    if (!users || users.length === 0) {
+        return next(new HttpError(
+            'Could not find any users',
+            404
+        ));
+    }
+
+    res.json(users)
+}
+
+// Working, searchterm needs to be specific
+const getUsersByName = async (req, res, next) => {
+    const name = req.params.name;
+    let users;
+
+    try {
+        users = await User.find({ name: name })
+    } catch (e) {
+        return next(new HttpError(
+            'Cannot find users by name',
+            500
+        ));
+    }
+
+    if (!users || users.length === 0) {
+        return next(new HttpError(
+            'Could not find any users',
+            404
+        ));
+    }
+
+    res.json(users)
+}
+
 exports.getAllUsers = getAllUsers;
 exports.getUserById = getUserById;
+exports.getUserByUid = getUserByUid;
+exports.getUsersByPhone = getUsersByPhone;
+exports.getUsersByName = getUsersByName;
 exports.createUser = createUser;
 exports.login = login;
 exports.updateUserById = updateUserById;

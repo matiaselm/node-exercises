@@ -9,12 +9,12 @@ const userSchema = new Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true, minlength: 4 },
-    address: { type: String, default: 'default', required: true },
-    postalnum: { type: Number, default: 0, required: true },
-    city: { type: String, default: 'default', required: true },
-    phonenum: { type: Number, default: 0, required: true },
-    bills: { type: Boolean, default: false, required: true },
-    admin: { type: Boolean, default: false }
+    address: { type: String, default: 'default', required: true, },
+    postalnum: { type: Number, default: 0, required: true, },
+    city: { type: String, default: 'default', required: true, },
+    phonenum: { type: Number, default: 0, required: true, },
+    bills: { type: Boolean, default: false, required: true, },
+    admin: { type: Boolean, default: false, required: true, }
 })
 
 userSchema.plugin(uniqueValidator);

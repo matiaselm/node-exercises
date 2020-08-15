@@ -9,6 +9,12 @@ router.get('/', usersControllers.getAllUsers);
 
 router.get('/:_id', usersControllers.getUserById);
 
+router.get('/uid/:uid', usersControllers.getUserByUid);
+
+router.get('/phone/:phonenum', usersControllers.getUsersByPhone);
+
+router.get('/name/:name', usersControllers.getUsersByName);
+
 router.post('/login/', usersControllers.login);
 
 router.post('/', usersControllers.createUser);
