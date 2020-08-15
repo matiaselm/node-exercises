@@ -7,7 +7,7 @@ const jwt = require('jsonwebtoken');
 
 // Created users are also currently added to the phonebook-part of the site, 
 // that's why so much information is required
-// Works with password encrypting
+// Working
 const createUser = async (req, res, next) => {
     console.log("POST request body: " + req.body);
     const { uid, name, email, password, address, postalnum, city, phonenum, bills } = req.body;
@@ -78,6 +78,7 @@ const createUser = async (req, res, next) => {
         .json({ token: token, uid: createdUser.uid, name: createdUser.name });
 };
 
+// Working
 const login = async (req, res, next) => {
     console.log("User login");
     const { uid, password } = req.body;
@@ -128,8 +129,25 @@ const login = async (req, res, next) => {
 
     res
         .status(201)
-        .json({ token: token, uid: existingUser.uid, name: existingUser.name });
+        .json({ token: token, uid: existingUser.uid, admin: existingUser.admin, name: existingUser.name });
 };
+
+// Working
+// PATCH http://localhost:5000/api/users/5f3692771703665810da9693 <- _id
+/*
+ 
+BODY: 
+{"address":"String",
+"postalnum":"Integer",
+"city":"String",
+"phonenum":"Integer",
+"bills":"Boolean",
+"uid":"String",
+"name":"String",
+"email":"String",
+"password":"String",
+"admin":"Boolean"}
+*/
 
 const updateUserById = async (req, res, next) => {
     const { uid, name, email, password, address, postalnum, city, phonenum, bills, admin } = req.body;
@@ -184,6 +202,8 @@ const updateUserById = async (req, res, next) => {
     res.json({ user: user.toObject({ getters: true }) });
 };
 
+// Working
+// DELETE http://localhost:5000/api/users/5f36b6ea1703665810da9694 <- _id
 const deleteUserById = async (req, res, next) => {
     const userId = req.params._id;
     let user;
@@ -213,6 +233,8 @@ const deleteUserById = async (req, res, next) => {
     res.status(200).json({ message: 'Deleted user' });
 };
 
+// Working
+// GET http://localhost:5000/api/users/
 const getAllUsers = async (req, res, next) => {
     let users;
     try {
@@ -234,6 +256,8 @@ const getAllUsers = async (req, res, next) => {
     res.json(users);
 };
 
+// Working:
+// GET http://localhost:5000/api/users/5f36605fe8ccd11d80ccf164 <- _id
 const getUserById = async (req, res, next) => {
     const userid = req.params._id;
     let user;
