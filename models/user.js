@@ -13,7 +13,8 @@ const userSchema = new Schema({
     postalnum: { type: Number, default: 0, required: true },
     city: { type: String, default: 'default', required: true },
     phonenum: { type: Number, default: 0, required: true },
-    bills: { type: Boolean, default: false, required: true }
+    bills: { type: Boolean, default: false, required: true },
+    admin: { type: Boolean, default: false }
 })
 
 userSchema.plugin(uniqueValidator);

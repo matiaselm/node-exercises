@@ -132,7 +132,7 @@ const login = async (req, res, next) => {
 };
 
 const updateUserById = async (req, res, next) => {
-    const { name, address, postalnum, city, phonenum, bills } = req.body;
+    const { uid, name, email, password, address, postalnum, city, phonenum, bills, admin } = req.body;
     const userId = req.params._id;
     let user;
 
@@ -140,22 +140,37 @@ const updateUserById = async (req, res, next) => {
         user = await User.findById(userId);
     } catch (e) {
         const error = new HttpError(
-            'Updating user failed', 500
+            'Finding user failed', 500
         );
         return next(error);
     }
+
+    let hashedPassword;
+
+    try {
+        hashedPassword = await bcrypt.hash(password, 12);
+    } catch (e) {
+        return next(new HttpError(
+            'Could not hash password', 500
+        ));
+    }
+
     if (user) {
+        user.uid = uid;
         user.name = name;
+        user.email = email;
+        user.password = hashedPassword;
         user.address = address;
         user.postalnum = postalnum;
         user.city = city;
         user.phonenum = phonenum;
         user.bills = bills;
+        user.admin = admin;
         try {
             await user.save();
         } catch (e) {
             const error = new HttpError(
-                'Updating user failed', 500
+                'Updating user failed' + e, 500
             );
             return next(error);
         }
